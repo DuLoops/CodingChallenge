@@ -7,9 +7,14 @@ process.stdin.setEncoding('utf-8');
 
 let inputString = '';
 let currentLine = 0;
+let counter = 0
 
 process.stdin.on('data', function(inputStdin) {
     inputString += inputStdin;
+    if (++counter == 7) {
+        process.stdin.emit('end');
+        
+    }
 });
 
 process.stdin.on('end', function() {
@@ -32,12 +37,38 @@ function readLine() {
  */
 
 function solve(arr, queries) {
-    // Write your code here
+  const result = []
+  for (let i = 0; i < queries.length; i++) {
+      const d = queries[i]
+      let subArray = arr.slice(0, d)
+      let maxIndex = subArray.reduce((prev, cur, curIndex) => subArray[prev] < cur ? curIndex : prev, 0)
+      let min = subArray[maxIndex]
+      
+      for (let index = d; index < arr.length; index++) {
+          subArray[index - d] = -1
+          subArray.push(arr[index])
+          
+          if (subArray[maxIndex] < 0) {
+              const newMaxIndex = subArray.reduce((prev, cur, curIndex) => subArray[prev] < cur ? curIndex : prev, 0)
+              maxIndex = newMaxIndex
+              min = Math.min(min, subArray[maxIndex])
+              continue
+          }
+          
+          if (subArray[index] < subArray[maxIndex]) continue
+          
+          maxIndex = index
+          min = Math.min(min, subArray[maxIndex])
+      }
+      result.push(min)
+  }
 
+  return result
 }
 
+
 function main() {
-    const ws = fs.createWriteStream(process.env.OUTPUT_PATH);
+    // const ws = fs.createWriteStream(process.env.OUTPUT_PATH);
 
     const firstMultipleInput = readLine().replace(/\s+$/g, '').split(' ');
 
@@ -56,7 +87,8 @@ function main() {
 
     const result = solve(arr, queries);
 
-    ws.write(result.join('\n') + '\n');
+    // ws.write(result.join('\n') + '\n');
+    console.log(result.join('\n') + '\n')
 
-    ws.end();
+    // ws.end();
 }

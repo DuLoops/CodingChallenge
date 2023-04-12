@@ -6,8 +6,13 @@ process.stdin.resume();
 process.stdin.setEncoding('utf-8');
 var inputString = '';
 var currentLine = 0;
+var counter = 0;
 process.stdin.on('data', function (inputStdin) {
   inputString += inputStdin;
+
+  if (++counter == 7) {
+    process.stdin.emit('end');
+  }
 });
 process.stdin.on('end', function () {
   inputString = inputString.split('\n');
@@ -27,11 +32,47 @@ function readLine() {
  */
 
 
-function solve(arr, queries) {// Write your code here
+function solve(arr, queries) {
+  var result = [];
+
+  var _loop = function _loop(i) {
+    var d = queries[i];
+    var subArray = arr.slice(0, d);
+    var maxIndex = subArray.reduce(function (prev, cur, curIndex) {
+      return subArray[prev] < cur ? curIndex : prev;
+    }, 0);
+    var min = subArray[maxIndex];
+
+    for (var index = d; index < arr.length; index++) {
+      subArray[index - d] = -1;
+      subArray.push(arr[index]);
+
+      if (subArray[maxIndex] < 0) {
+        var newMaxIndex = subArray.reduce(function (prev, cur, curIndex) {
+          return subArray[prev] < cur ? curIndex : prev;
+        }, 0);
+        maxIndex = newMaxIndex;
+        min = Math.min(min, subArray[maxIndex]);
+        continue;
+      }
+
+      if (subArray[index] < subArray[maxIndex]) continue;
+      maxIndex = index;
+      min = Math.min(min, subArray[maxIndex]);
+    }
+
+    result.push(min);
+  };
+
+  for (var i = 0; i < queries.length; i++) {
+    _loop(i);
+  }
+
+  return result;
 }
 
 function main() {
-  var ws = fs.createWriteStream(process.env.OUTPUT_PATH);
+  // const ws = fs.createWriteStream(process.env.OUTPUT_PATH);
   var firstMultipleInput = readLine().replace(/\s+$/g, '').split(' ');
   var n = parseInt(firstMultipleInput[0], 10);
   var q = parseInt(firstMultipleInput[1], 10);
@@ -45,7 +86,7 @@ function main() {
     queries.push(queriesItem);
   }
 
-  var result = solve(arr, queries);
-  ws.write(result.join('\n') + '\n');
-  ws.end();
+  var result = solve(arr, queries); // ws.write(result.join('\n') + '\n');
+
+  console.log(result.join('\n') + '\n'); // ws.end();
 }
