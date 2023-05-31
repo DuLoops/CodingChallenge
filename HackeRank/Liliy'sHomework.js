@@ -32,38 +32,46 @@ function readLine() {
  * The function accepts INTEGER_ARRAY arr as parameter.
  */
 
+function swap(arr, a, b) {
+  let temp = arr[a]
+  arr[a] = arr[b]
+  arr[b] = temp
+}
+
+
 function unsortVectorArr(vectorArr, arr) {
-  let swaps = 0
-  for (let i = 0; i < arr.length; i++) {
-    if (vectorArr[i].value !== arr[i]) {
-      let newIndex = vectorArr.index
-      [vectorArr[i], vectorArr[newIndex]] = [vectorArr[newIndex], vectorArr[i]]
-      swaps++
-      i--
-    }
+let swaps = 0
+for (let i = 0; i < arr.length; i++) {
+  if (vectorArr[i].value !== arr[i]) {
+    //let newIndex = vectorArr[i].index
+    swap(vectorArr, i, vectorArr[i].index)
+    swaps++
+    i--
   }
-  return swaps
+}
+return swaps
 }
 
 function lilysHomework(arr) {
-    let vectorArr = []
-    let swapsAscending = 0
-    let swapsDescending = 0
+  let vectorArr = []
+  let swapsAscending = 0
+  let swapsDescending = 0
 
-    for (let i = 0; i < arr.length; i++) {
-      vectorArr.push({value: arr[i], index: i})
-    }
+  for (let i = 0; i < arr.length; i++) {
+    vectorArr.push({value: arr[i], index: i})
+  }
 
-    vectorArr.sort((a, b) => a.value - b.value)
+  vectorArr.sort((a, b) => a.value - b.value)
 
-    swapsAscending = unsortVectorArr(vectorArr, arr)
+  swapsAscending = unsortVectorArr(vectorArr, arr)
 
-    vectorArr.sort((a, b) => b.value - a.value)
+  vectorArr.sort((a, b) => b.value - a.value)
 
-    swapsDescending = unsortVectorArr(vectorArr, arr)
+  swapsDescending = unsortVectorArr(vectorArr, arr)
 
-    return Math.min(swapsAscending, swapsDescending)
+  return Math.min(swapsAscending, swapsDescending)
 }
+
 
 function main() {
     // const ws = fs.createWriteStream(process.env.OUTPUT_PATH);

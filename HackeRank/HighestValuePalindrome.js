@@ -36,19 +36,6 @@ function readLine() {
  *  3. INTEGER k
  */
 
-const isPal = (s) => {
-    for (let i = 0; i < s.length / 2; i++) {
-        if (s[i] != s[s.length - 1 - i]) {
-            return false
-        }
-    }
-    return true
-}
-
-const replaceCharAt = (str, index, char) => {
-    if (index > str.length - 1) return str
-    return str.substr(0, index) + char + str.substr(index + 1)
-}
 
 function highestValuePalindrome(s, n, k) {
     if (n === 1) return k == 1 ? '9' : '-1'
