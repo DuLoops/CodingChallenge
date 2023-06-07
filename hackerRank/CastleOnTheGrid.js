@@ -38,10 +38,10 @@ function minimumMoves(grid, startX, startY, goalX, goalY) {
     const queue = []
     const directions = ["right", "down", "left", "up"]
     for (let x = 0; x < grid.length; x++) {
-        grid[x] = gris[x].split("")
+        grid[x] = grid[x].split("")
     }
 
-    grix[startX][startY] = 0
+    grid[startX][startY] = 0
     queue.push({x: startX, y: startY})
 
     while(queue.length > 0) {
