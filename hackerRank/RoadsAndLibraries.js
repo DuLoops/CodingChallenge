@@ -41,64 +41,60 @@ function readLine() {
 
 
 function roadsAndLibraries(n, c_lib, c_road, cities) {
-    const allCities = new Map();
-    const clusters = new Set();
+    const allCities  = new Map()
+    const clusters = new Set()
 
-    // if library cost is less than road or there are no pairs, return total cities x lib cost
-    if (c_lib < c_road || cities.length === 0) return n * c_lib;
+    // if lib cost less than road, build libraries in every city
+    if (c_lib < c_road || cities.length === 0) {
+        return n * c_lib
+    }
 
-    // build all city nodes
     for (let connection of cities) {
-        const city1 = allCities.get(connection[0]) || { value: connection[0] };
-        const city2 = allCities.get(connection[1]) || { value: connection[1] };
+        const city1 = allCities.get(connection[0] || {value: connection[0]})
+        const city2 = allCities.get(connection[1] || {value: connection[1]})
 
-        // if this city connection has already been processed made
-        if (city1.cluster && city1.cluster === city2.cluster) continue;
+        //if clusters are set, continue
+        if (city1.cluster && city1.cluster === city2.cluster ) continue
 
-        // if both cities have no cluster, then start a new cluster
+        //if both have no clusters, start new
         if (!city1.cluster && !city2.cluster) {
-            city1.cluster = city2.cluster = new Set([city1, city2]);
-            clusters.add(city1.cluster);
-            allCities.set(city1.value, city1);
-            allCities.set(city2.value, city2);
-            continue;
+            city1.cluster = city2.cluster = new Set([city1, city2])
+            clusters.add(city1.clutser)
+            allCities.set(city1.value, city1) 
+            allCities.set(city2.value, city2)
+            continue
         }
 
-        // if both cities have clusters, then merge them
+        //if both have clusters, merge
         if (city1.cluster && city2.cluster) {
-            // merge clusters
-            clusters.delete(city2.cluster);
+            clusters.delete(city2.cluster)
             for (let node of city2.cluster) {
-                city1.cluster.add(node);
-                node.cluster = city1.cluster;
+                city1.cluster.add(node)
+                node.cluster = city1.cluster
             }
-            continue;
+            continue
         }
 
-        // only one city has a cluster, so join the new city to the cluster
-        city1.cluster = city2.cluster = city1.cluster || city2.cluster;
-        city1.cluster.add(city1);
-        city1.cluster.add(city2);
-        allCities.set(city1.value, city1);
-        allCities.set(city2.value, city2);
+        //if only one city has cluster, join 
+        city1.cluster = city2.cluster = city1.cluster || city2.cluster
+        city1.cluster.add(city1)
+        city1.cluster.add(city2)
+        allCities.set(city1.value, city1)
+        allCities.set(city2.value, city2)
     }
 
-    let totalCost = 0;
-    let totalClusteredCities = 0;
+    let totalCost = 0
+    let totalClusteredCities = 0
 
-    // figure out cost for cluster
     for (let cluster of clusters) {
-        totalCost += c_lib;
-        totalCost += (cluster.size - 1) * c_road;
-        totalClusteredCities += cluster.size;
+        totalCost += c_clib
+        totalCost += (cluster.size - 1) * c_road
+        totalClusteredCities += cluster.size
     }
 
-    // caluculate isolated cities
-    const isolatedCities = n - totalClusteredCities;
-    console.log(`Total isolated citied: ${isolatedCities}`);
-    totalCost += isolatedCities * c_lib;
-
-    return totalCost;
+    const isolatedCities = n - totalClusteredCities
+    totalCost += isolatedCities * c_lib
+    return totalCost
 
 }
 
